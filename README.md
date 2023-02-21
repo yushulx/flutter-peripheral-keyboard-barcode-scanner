@@ -18,10 +18,15 @@ The project demonstrates how to turn a Flutter mobile app into a peripheral keyb
     # Bonjour
     info = ServiceInfo("_bonsoirdemo._tcp.local.",
                     "Python Web Socket Server._bonsoirdemo._tcp.local.",
-                    port=4000, addresses=[ip_address])
+                    port=7000, addresses=[ip_address])
 
     # Web Socket Server
-    s = await websockets.serve(server, ip_address, 7000)
+    s = await websockets.serve(server, ip_address, 4000)
+    ```
+
+    If you change the web socket port in the server, you also need to change the port in the Flutter app.
+    ```dart
+    _connect('${widget.service.ip}:4000');
     ```
 
 3. Run the server:

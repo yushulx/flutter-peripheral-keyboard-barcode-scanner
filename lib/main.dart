@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:peripheral/globals.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/status.dart' as status;
 
@@ -31,10 +32,10 @@ class MyHomePage extends StatefulWidget {
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MyHomePage> createState() => MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class MyHomePageState extends State<MyHomePage> {
   final TextEditingController _textController = TextEditingController();
   final TextEditingController _sendController = TextEditingController();
   IOWebSocketChannel? _channel;
@@ -79,13 +80,6 @@ class _MyHomePageState extends State<MyHomePage> {
     'M',
   ];
 
-  List<String> items = [];
-  void addItem(String item) {
-    setState(() {
-      items.add(item);
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -93,10 +87,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _launchCamera() {}
 
-  void _connect(String msg) {
+  void connect(String msg) {
     if (_connected) {
       print('disconnect to $msg');
       _channel!.sink.close(status.goingAway);
+      channels.remove(_channel!);
       _connected = false;
       _connectAction = 'Connect';
       setState(() {});
@@ -106,10 +101,11 @@ class _MyHomePageState extends State<MyHomePage> {
     _channel = IOWebSocketChannel.connect('ws://$msg');
 
     _channel!.ready.then((_) {
+      channels.add(_channel!);
       print('connected to $msg');
       _connected = true;
       _connectAction = 'Disconnect';
-
+      _channel = null;
       setState(() {});
       _channel!.stream.listen((message) {
         print('received: $message');
@@ -121,6 +117,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void dispose() {
     if (_channel != null) {
       _channel!.sink.close(status.goingAway);
+      channels.remove(_channel!);
     }
     super.dispose();
   }
@@ -146,12 +143,14 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void _sendMessage(String msg) {
-    if (_channel == null) {
+    if (channels.isEmpty) {
       _showDialog('Error', 'Not connected');
       return;
     }
 
-    _channel!.sink.add(msg);
+    for (final channel in channels) {
+      channel.sink.add(msg);
+    }
     _sendController.clear();
   }
 
@@ -178,7 +177,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      _connect(_sendController.text);
+                      connect(_textController.text);
                     },
                     child: Text(_connectAction),
                   ),
@@ -344,14 +343,14 @@ class _MyHomePageState extends State<MyHomePage> {
                         children: [
                           Expanded(
                             child: TextField(
-                              controller: _textController,
+                              controller: _sendController,
                               decoration: const InputDecoration(
                                   hintText: 'Input the message'),
                             ),
                           ),
                           ElevatedButton(
                             onPressed: () {
-                              _sendMessage(_textController.text);
+                              _sendMessage(_sendController.text);
                             },
                             child: const Text('Send'),
                           ),
@@ -368,6 +367,7 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Barcode Scanner',
         child: const Icon(Icons.camera),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
     );
   }
 }

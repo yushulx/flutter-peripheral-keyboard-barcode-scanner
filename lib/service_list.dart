@@ -5,11 +5,12 @@ import 'package:web_socket_channel/io.dart';
 
 import 'app_service.dart';
 import 'discovery.dart';
+import 'package:web_socket_channel/status.dart' as status;
+
+import 'globals.dart';
 
 /// Allows to display all discovered services.
 class ServiceList extends ConsumerWidget {
-  ServiceList({super.key});
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     BonsoirDiscoveryModel model = ref.watch(discoveryModelProvider);
@@ -32,38 +33,82 @@ class ServiceList extends ConsumerWidget {
     return ListView.builder(
         itemCount: discoveredServices.length,
         itemBuilder: (BuildContext context, int index) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: _ServiceWidget(service: discoveredServices[index]),
-                ),
-                ElevatedButton(
-                  onPressed: () {},
-                  child: Text('Connect'),
-                ),
-              ],
-            ),
-          );
+          return ItemWidget(service: discoveredServices[index]);
         });
   }
 }
 
 /// Allows to display a discovered service.
-class _ServiceWidget extends StatelessWidget {
-  /// The discovered service.
+/// class ItemWidget extends StatefulWidget {
+class ItemWidget extends StatefulWidget {
   final ResolvedBonsoirService service;
-
-  /// Creates a new service widget.
-  const _ServiceWidget({
-    required this.service,
-  });
+  const ItemWidget({super.key, required this.service});
 
   @override
-  Widget build(BuildContext context) => ListTile(
-        title: Text(service.name),
-        subtitle: Text(
-            'Type : ${service.type}, ip : ${service.ip}, port : ${service.port}'),
-      );
+  State<ItemWidget> createState() => ItemWidgetState();
+}
+
+class ItemWidgetState extends State<ItemWidget> {
+  IOWebSocketChannel? _channel;
+  String _connectAction = 'Connect';
+  bool _connected = false;
+
+  void _connect(String msg) {
+    if (_connected) {
+      print('disconnect to $msg');
+      _channel!.sink.close(status.goingAway);
+      channels.remove(_channel!);
+      _connected = false;
+      _connectAction = 'Connect';
+      _channel = null;
+      setState(() {});
+      return;
+    }
+
+    _channel = IOWebSocketChannel.connect('ws://$msg');
+
+    _channel!.ready.then((_) {
+      channels.add(_channel!);
+      print('connected to $msg');
+      _connected = true;
+      _connectAction = 'Disconnect';
+
+      setState(() {});
+      _channel!.stream.listen((message) {
+        print('received: $message');
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    if (_channel != null) {
+      _channel!.sink.close(status.goingAway);
+      channels.remove(_channel!);
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: ListTile(
+              title: Text(widget.service.name),
+              subtitle: Text('ip : ${widget.service.ip}'),
+            ),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              _connect('${widget.service.ip}:4000');
+            },
+            child: Text(_connectAction),
+          ),
+        ],
+      ),
+    );
+  }
 }

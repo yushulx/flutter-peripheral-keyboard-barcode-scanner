@@ -58,7 +58,8 @@ def ctrl_c(signum, frame):
 async def main(ip_address):
     global isShutdown
     # Start the server
-    s = await websockets.serve(server, ip_address, 7000)
+    s = await websockets.serve(server, ip_address, 4000)
+    print(f"Server started on {ip_address}:4000")
 
     while not isShutdown:
         await asyncio.sleep(1)
@@ -74,7 +75,7 @@ if __name__ == '__main__':
 
     info = ServiceInfo("_bonsoirdemo._tcp.local.",
                     "Python Web Socket Server._bonsoirdemo._tcp.local.",
-                    port=4000, addresses=[ip_address])
+                    port=7000, addresses=[ip_address])
 
     zeroconf = Zeroconf()
     # Register the Bonjour service
