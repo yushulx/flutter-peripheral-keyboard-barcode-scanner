@@ -39,3 +39,5 @@ The project demonstrates how to turn a Flutter mobile app into a peripheral keyb
     ```bash
     flutter run
     ```
+    
+    https://user-images.githubusercontent.com/2202306/220560577-95e8b1a3-de36-48e1-926c-3a34a506fb82.mp4
