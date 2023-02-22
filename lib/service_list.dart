@@ -60,7 +60,6 @@ class ItemWidgetState extends State<ItemWidget> {
       channels.remove(_channel!);
       _connected = false;
       _connectAction = 'Connect';
-      _channel = null;
       setState(() {});
       return;
     }
@@ -76,6 +75,17 @@ class ItemWidgetState extends State<ItemWidget> {
       setState(() {});
       _channel!.stream.listen((message) {
         print('received: $message');
+      }, onError: (error) {
+        print('error: $error');
+      }, onDone: () {
+        if (_channel!.closeCode != null) {
+          print('WebSocket is closed with code: ${_channel!.closeCode}');
+        } else {
+          print('WebSocket is closed');
+        }
+        _connected = false;
+        _connectAction = 'Connect';
+        setState(() {});
       });
     });
   }
@@ -98,7 +108,7 @@ class ItemWidgetState extends State<ItemWidget> {
           Expanded(
             child: ListTile(
               title: Text(widget.service.name),
-              subtitle: Text('ip : ${widget.service.ip}'),
+              subtitle: Text('IP : ${widget.service.ip}, Port: 4000'),
             ),
           ),
           ElevatedButton(

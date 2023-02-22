@@ -87,7 +87,7 @@ class MyHomePageState extends State<MyHomePage> {
 
   void _launchCamera() {}
 
-  void connect(String msg) {
+  void _connect(String msg) {
     if (_connected) {
       print('disconnect to $msg');
       _channel!.sink.close(status.goingAway);
@@ -105,10 +105,20 @@ class MyHomePageState extends State<MyHomePage> {
       print('connected to $msg');
       _connected = true;
       _connectAction = 'Disconnect';
-      _channel = null;
       setState(() {});
       _channel!.stream.listen((message) {
         print('received: $message');
+      }, onError: (error) {
+        print('error: $error');
+      }, onDone: () {
+        if (_channel!.closeCode != null) {
+          print('WebSocket is closed with code: ${_channel!.closeCode}');
+        } else {
+          print('WebSocket is closed');
+        }
+        _connected = false;
+        _connectAction = 'Connect';
+        setState(() {});
       });
     });
   }
@@ -177,7 +187,7 @@ class MyHomePageState extends State<MyHomePage> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      connect(_textController.text);
+                      _connect(_textController.text);
                     },
                     child: Text(_connectAction),
                   ),
@@ -335,8 +345,8 @@ class MyHomePageState extends State<MyHomePage> {
               child: Align(
                 alignment: Alignment.bottomCenter,
                 child: SizedBox(
-                  height: 200,
-                  width: MediaQuery.of(context).size.width,
+                  height: 100,
+                  width: MediaQuery.of(context).size.width * 2 / 3,
                   child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Row(
@@ -367,7 +377,6 @@ class MyHomePageState extends State<MyHomePage> {
         tooltip: 'Barcode Scanner',
         child: const Icon(Icons.camera),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.startDocked,
     );
   }
 }

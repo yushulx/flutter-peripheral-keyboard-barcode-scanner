@@ -55,9 +55,6 @@ class BonsoirDiscoveryModel extends ChangeNotifier {
 
     ResolvedBonsoirService service = event.service as ResolvedBonsoirService;
     if (event.type == BonsoirDiscoveryEventType.discoveryServiceResolved) {
-      if (service.name.contains('Web Socket Client')) {
-        return;
-      }
       _resolvedServices.add(service);
       notifyListeners();
     } else if (event.type == BonsoirDiscoveryEventType.discoveryServiceLost) {
