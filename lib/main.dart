@@ -4,7 +4,7 @@ import 'package:peripheral/globals.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/status.dart' as status;
 
-import 'discovery.dart';
+import 'scanner_screen.dart';
 import 'service_list.dart';
 
 void main() {
@@ -85,7 +85,12 @@ class MyHomePageState extends State<MyHomePage> {
     super.initState();
   }
 
-  void _launchCamera() {}
+  void _launchCamera() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ScannerScreen()),
+    );
+  }
 
   void _connect(String msg) {
     if (_connected) {
@@ -152,18 +157,6 @@ class MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  void _sendMessage(String msg) {
-    if (channels.isEmpty) {
-      _showDialog('Error', 'Not connected');
-      return;
-    }
-
-    for (final channel in channels) {
-      channel.sink.add(msg);
-    }
-    _sendController.clear();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -221,7 +214,7 @@ class MyHomePageState extends State<MyHomePage> {
                                 textAlign: TextAlign.center,
                               ),
                               onPressed: () {
-                                _sendMessage(key);
+                                sendMessage(key);
                               },
                             ),
                           ),
@@ -248,7 +241,7 @@ class MyHomePageState extends State<MyHomePage> {
                                 textAlign: TextAlign.center,
                               ),
                               onPressed: () {
-                                _sendMessage(key);
+                                sendMessage(key);
                               },
                             ),
                           ),
@@ -275,7 +268,7 @@ class MyHomePageState extends State<MyHomePage> {
                                 textAlign: TextAlign.center,
                               ),
                               onPressed: () {
-                                _sendMessage(key);
+                                sendMessage(key);
                               },
                             ),
                           ),
@@ -302,7 +295,7 @@ class MyHomePageState extends State<MyHomePage> {
                                 textAlign: TextAlign.center,
                               ),
                               onPressed: () {
-                                _sendMessage(key);
+                                sendMessage(key);
                               },
                             ),
                           ),
@@ -322,7 +315,7 @@ class MyHomePageState extends State<MyHomePage> {
                             color: Colors.blue,
                             iconSize: 24.0,
                             onPressed: () {
-                              _sendMessage('backspace');
+                              sendMessage('backspace');
                             },
                           )),
                       SizedBox(
@@ -333,7 +326,7 @@ class MyHomePageState extends State<MyHomePage> {
                             color: Colors.blue,
                             iconSize: 24.0,
                             onPressed: () {
-                              _sendMessage('enter');
+                              sendMessage('enter');
                             },
                           )),
                     ],
@@ -360,7 +353,8 @@ class MyHomePageState extends State<MyHomePage> {
                           ),
                           ElevatedButton(
                             onPressed: () {
-                              _sendMessage(_sendController.text);
+                              sendMessage(_sendController.text);
+                              _sendController.clear();
                             },
                             child: const Text('Send'),
                           ),

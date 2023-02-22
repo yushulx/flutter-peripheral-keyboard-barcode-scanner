@@ -27,3 +27,15 @@ The project demonstrates how to turn a Flutter mobile app into a peripheral keyb
     ```bash
     python server.py
     ```
+
+## Setting Up the Flutter Mobile App
+1. Apply for a trial license key of Dynamsoft Barcode Reader SDK from [here](https://www.dynamsoft.com/customer/license/trialLicense/?product=dbr).
+2. Replace the license key in the `scanner_screen.dart` file.
+    ```dart
+    await DCVBarcodeReader.initLicense(
+          'DLS2eyJoYW5kc2hha2VDb2RlIjoiMjAwMDAxLTE2NDk4Mjk3OTI2MzUiLCJvcmdhbml6YXRpb25JRCI6IjIwMDAwMSIsInNlc3Npb25QYXNzd29yZCI6IndTcGR6Vm05WDJrcEQ5YUoifQ==');
+    ```
+3. Run the app on your mobile device.
+    ```bash
+    flutter run
+    ```
