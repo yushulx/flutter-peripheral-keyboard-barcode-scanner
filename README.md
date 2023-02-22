@@ -5,7 +5,7 @@ The project demonstrates how to turn a Flutter mobile app into a peripheral keyb
 ## Setting Up the Python Server
 1. Install [pyautogui](https://pypi.org/project/PyAutoGUI/), [websockets](https://pypi.org/project/websockets/) and [zeroconf](https://pypi.org/project/zeroconf/) using pip:
     ```bash
-    pip install pyautogui
+    pip install pyautogui websockets zeroconf
     ```
 2. Change the port numbers for Bonjour service and web socket server if they are already in use.
     ```python
