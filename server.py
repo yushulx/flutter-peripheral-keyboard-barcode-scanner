@@ -114,7 +114,7 @@ if __name__ == '__main__':
     # Convert the IP address string to a binary representation
     ip_address = socket.inet_aton(ip_address_str)
 
-    info = ServiceInfo("_bonsoirdemo._tcp.local.", socket.gethostname() +
+    info = ServiceInfo("_bonsoirdemo._tcp.local.", socket.gethostname().split('.')[0] +
                     " Web Socket Server._bonsoirdemo._tcp.local.",
                     port=7000, addresses=[ip_address])
 
