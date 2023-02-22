@@ -7,6 +7,11 @@ import signal
 from zeroconf import ServiceBrowser, ServiceInfo, ServiceListener, Zeroconf
 import socket
 
+import subprocess
+import re
+import sys
+
+
 connected = set()
 isShutdown = False
 
@@ -68,8 +73,41 @@ async def main(ip_address):
     s.close()
     await s.wait_closed()
 
+def get_ip_address():
+    ip_address = ''
+    if sys.platform == 'win32':
+        result = subprocess.run(['ipconfig', '/all'], capture_output=True, text=True)   
+    else:
+        result = subprocess.run(['ifconfig'], capture_output=True, text=True)
+
+    foundEthernet = False
+    for line in result.stdout.split('\n'):
+        if sys.platform == 'win32':
+            match = re.search(r'Ethernet adapter Ethernet:', line)
+            if match:
+                foundEthernet = True
+            
+            if foundEthernet:
+                match = re.search(r'IPv4 Address.*? : (\d+\.\d+\.\d+\.\d+)', line)
+                if match:
+                    ip_address = match.group(1)
+                    break
+        else:
+            match = re.search(r'eth0:', line)
+            if match:
+                foundEthernet = True
+            
+            if foundEthernet:
+                match = re.search(r'(\d+\.\d+\.\d+\.\d+)', line)
+                if match:
+                    ip_address = match.group(1)
+                    break
+
+    return ip_address
+
 if __name__ == '__main__':
-    ip_address_str = "192.168.8.72"
+    # ip_address_str = "192.168.8.72"
+    ip_address_str = get_ip_address()
     # Convert the IP address string to a binary representation
     ip_address = socket.inet_aton(ip_address_str)
 

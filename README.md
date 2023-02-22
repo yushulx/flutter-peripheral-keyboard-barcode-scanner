@@ -7,13 +7,7 @@ The project demonstrates how to turn a Flutter mobile app into a peripheral keyb
     ```bash
     pip install pyautogui
     ```
-2. Change the IP address in `server.py` to the IP address of your PC.
-    
-    ```python
-    ip_address_str = "192.168.8.72" # Change this to your PC's IP address
-    ```
-
-    You may also need to change the port numbers for Bonjour service and web socket server if they are already in use.
+2. Change the port numbers for Bonjour service and web socket server if they are already in use.
     ```python
     # Bonjour
     info = ServiceInfo("_bonsoirdemo._tcp.local.",
