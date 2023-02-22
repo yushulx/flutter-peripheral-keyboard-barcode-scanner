@@ -53,7 +53,7 @@
 	<string>Looking for local tcp Bonjour service</string>
 	<key>NSBonjourServices</key>
 	<array>
-		<string>_some-service._tcp</string>
+		<string>_bonsoirdemo._tcp</string>
 </array>
 </dict>
 </plist>
