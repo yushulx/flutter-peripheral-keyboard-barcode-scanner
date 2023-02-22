@@ -93,7 +93,10 @@ def get_ip_address():
                     ip_address = match.group(1)
                     break
         else:
-            match = re.search(r'eth0:', line)
+            if sys.platform == "linux" or sys.platform == "linux2":
+                match = re.search(r'eth0:', line)
+            else:
+                match = re.search(r'en0:', line)
             if match:
                 foundEthernet = True
             
@@ -111,8 +114,8 @@ if __name__ == '__main__':
     # Convert the IP address string to a binary representation
     ip_address = socket.inet_aton(ip_address_str)
 
-    info = ServiceInfo("_bonsoirdemo._tcp.local.",
-                    "Python Web Socket Server._bonsoirdemo._tcp.local.",
+    info = ServiceInfo("_bonsoirdemo._tcp.local.", socket.gethostname() +
+                    " Web Socket Server._bonsoirdemo._tcp.local.",
                     port=7000, addresses=[ip_address])
 
     zeroconf = Zeroconf()
