@@ -5,7 +5,6 @@ import pyautogui
 import signal
 
 from zeroconf import ServiceBrowser, ServiceInfo, ServiceListener, Zeroconf
-import socket
 
 import subprocess
 import re
