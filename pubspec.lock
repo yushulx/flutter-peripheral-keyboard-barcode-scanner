@@ -98,7 +98,7 @@ packages:
       name: dynamsoft_capture_vision_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.1"
+    version: "1.2.2"
   fake_async:
     dependency: transitive
     description:

@@ -203,7 +203,7 @@ class MyHomePageState extends State<MyHomePage> {
                           child: Row(
                         children: [
                           SizedBox(
-                            width: 40.0,
+                            width: MediaQuery.of(context).size.width / 9 - 6,
                             height: 40.0,
                             child: MaterialButton(
                               color: Colors.blue,
@@ -230,7 +230,7 @@ class MyHomePageState extends State<MyHomePage> {
                           child: Row(
                         children: [
                           SizedBox(
-                            width: 40.0,
+                            width: MediaQuery.of(context).size.width / 9 - 6,
                             height: 40.0,
                             child: MaterialButton(
                               color: Colors.blue,
@@ -257,7 +257,7 @@ class MyHomePageState extends State<MyHomePage> {
                           child: Row(
                         children: [
                           SizedBox(
-                            width: 40.0,
+                            width: MediaQuery.of(context).size.width / 9 - 6,
                             height: 40.0,
                             child: MaterialButton(
                               color: Colors.blue,
@@ -284,7 +284,7 @@ class MyHomePageState extends State<MyHomePage> {
                           child: Row(
                         children: [
                           SizedBox(
-                            width: 40.0,
+                            width: MediaQuery.of(context).size.width / 9 - 6,
                             height: 40.0,
                             child: MaterialButton(
                               color: Colors.blue,

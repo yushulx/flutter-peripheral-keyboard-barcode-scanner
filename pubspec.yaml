@@ -38,7 +38,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   bonsoir: ^2.0.0
   web_socket_channel: ^2.3.0
-  dynamsoft_capture_vision_flutter: ^1.2.1
+  dynamsoft_capture_vision_flutter: ^1.2.2
   flutter_riverpod: ^2.2.0
   device_info: ^2.0.3
 
